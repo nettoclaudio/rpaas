@@ -1,0 +1,37 @@
+openapi: 3.0.0
+
+info:
+  title: "RPaaS API"
+  description: "The specification about the Reverse Proxy as a Service API."
+  version: 0.4.0
+  contact:
+    name: "Tsuru PaaS"
+    email: "tsuru@corp.globo.com"
+    url: "https://github.com/tsuru/rpaas"
+
+paths:
+  /admin/plugin:
+    get:
+      summary: "Returns an administration client script (written in Python 2.x) compatible with the current version of RPaaS Admin API."
+      tags:
+      - plugins
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /plugin:
+    get:
+      summary: "Returns a client script (written in Python 2.x) compatible with the current RPaaS API."
+      tags:
+      - plugins
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: string
