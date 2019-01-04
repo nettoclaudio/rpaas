@@ -475,12 +475,12 @@ def delete_lua(name):
 
 @api.route("/plugin", methods=["GET"])
 def get_plugin():
-    return inspect.getsource(plugin)
+    return Response(response=inspect.getsource(plugin), mimetype='text/plain')
 
 
 @api.route("/admin/plugin", methods=["GET"])
 def get_admin_plugin():
-    return inspect.getsource(admin_plugin)
+    return Response(response=inspect.getsource(admin_plugin), mimetype='text/plain')
 
 
 admin_api.register_views(api, plans, flavors)
