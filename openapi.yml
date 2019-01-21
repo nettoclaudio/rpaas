@@ -8,11 +8,11 @@ info:
     name: "Tsuru PaaS"
     email: tsuru@corp.globo.com
     url: "https://github.com/tsuru/rpaas"
-    
+
 paths:
   /admin/plugin:
     get:
-      summary: "Returns a Tsuru plugin to manage the RPaaS service through the command line interface."
+      summary: "Returns a Tsuru plugin to manage the RPaaS service through the command line interface"
       tags:
       - plugins
       responses:
@@ -35,3 +35,74 @@ paths:
             text/plain:
               schema:
                 type: string
+
+  /resources/flavors:
+    get:
+      summary: "Returns a list of available flavors"
+      security:
+        - BasicAuth: []
+      tags:
+        - resources
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Flavor"
+
+  /resources/plans:
+    get:
+      summary: "Returns a list of available plans"
+      security:
+        - BasicAuth: []
+      tags:
+        - resources
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Plan"
+
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+
+  schemas:
+    Flavor:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "dsr"
+        description:
+          type: string
+          example: "A little description about Direct Server Return"
+        config:
+          type: string
+          example: {
+            FLAVOR_CONFIG_KEY: "some value for example"
+          }
+
+    Plan:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "large"
+        description:
+          type: string
+          example: "4 vCPUs + 8GB RAM"
+        config:
+          type: object
+          example: {
+            PLAN_CONFIG_KEY: "some value for example"
+          }
