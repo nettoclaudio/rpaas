@@ -14,7 +14,7 @@ paths:
     get:
       summary: "Returns a Tsuru plugin to manage the RPaaS service through the command line interface"
       tags:
-      - plugins
+        - plugins
       responses:
         "200":
           description: "OK"
@@ -27,7 +27,7 @@ paths:
     get:
       summary: "Returns a Tsuru plugin to use the RPaaS service through the command line interface"
       tags:
-      - plugins
+        - plugins
       responses:
         "200":
           description: "OK"
@@ -35,6 +35,31 @@ paths:
             text/plain:
               schema:
                 type: string
+
+  /resources:
+    post:
+      summary: "Creates an instance"
+      security:
+        - BasicAuth: []
+      tags:
+        - resources
+      requestBody:
+        $ref: "#/components/requestBodies/ResourceBody"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          $ref: "#/components/responses/InsufficientParameters"
+        "403":
+          $ref: "#/components/responses/QuotaExceeded"
+        "405":
+          $ref: "#/components/responses/InstanceCreationDisabled"
+        "409":
+          $ref: "#/components/responses/InstanceAlreadyExists"
 
   /resources/flavors:
     get:
@@ -76,7 +101,47 @@ components:
       type: http
       scheme: basic
 
+  requestBodies:
+    ResourceBody:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: "#/components/schemas/Resource"
+
+  responses:
+    InstanceAlreadyExists:
+      description: "The instance already exists"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    InstanceCreationDisabled:
+      description: "The instance creation is disabled"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    InsufficientParameters:
+      description: "Some mandatory input was not assigned"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    QuotaExceeded:
+      description: "Quota exceeded"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/Error"
+
   schemas:
+    Error:
+      type: string
+
     Flavor:
       type: object
       properties:
@@ -106,3 +171,23 @@ components:
           example: {
             PLAN_CONFIG_KEY: "some value for example"
           }
+
+    Resource:
+      type: object
+      properties:
+        name:
+          type: string
+          pattern: "^[0-9a-z-]+$"
+          example: "my-rpaas-instance"
+        team:
+          type: string
+          example: "my-team"
+        flavor:
+          type: string
+          example: "flavor-name"
+        plan:
+          type: string
+          example: "plan-name"
+      required:
+        - name
+        - team
